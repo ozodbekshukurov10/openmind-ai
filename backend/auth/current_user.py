@@ -21,3 +21,15 @@ def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(
     if user is None:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Foydalanuvchi topilmadi")
     return user
+
+from fastapi import Depends, HTTPException, status
+from backend.models.user_model import User
+from backend.auth.current_user import get_current_user
+
+def get_current_admin(current_user: User = Depends(get_current_user)):
+    if current_user.role != "admin":
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Faqat admin kirishi mumkin"
+        )
+    return current_user
