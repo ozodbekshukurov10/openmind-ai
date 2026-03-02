@@ -1,12 +1,11 @@
 from fastapi import FastAPI
-from routes.chat import router as chat_router
-from routes.auth import router as auth_router
+from backend.routes import auth
+from backend.database import Base, engine
 
 app = FastAPI(title="OpenMind AI")
 
-app.include_router(chat_router)
-app.include_router(auth_router)
+# Jadval yaratish
+Base.metadata.create_all(bind=engine)
 
-@app.get("/")
-def home():
-    return {"message": "OpenMind AI Professional Backend 🚀"}
+# Router ulash
+app.include_router(auth.router)
